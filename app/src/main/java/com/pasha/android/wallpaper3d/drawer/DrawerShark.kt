@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.hardware.Sensor
 import android.hardware.SensorEvent
+import android.util.Log
 import android.view.MotionEvent
 import com.pasha.android.wallpaper3d.toRadians
 import kotlin.math.cos
@@ -15,13 +16,15 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class DrawerShark : Drawer() {
-    val numsShark = 5
-    var velocity = 800.0
+    val numsShark = 3
+    var velocity = 550.0
     val velocityRange = -3000.0..3000.0
     val paddingSharks = 200
-    val innerPaddingSharks = 100
+    val innerPaddingSharks = 150
     val coordinate =
         MutableList<Double>(numsShark) { index -> 0.0 + Random.nextDouble(0.0, 360.0) }
+    val minSizeShark = 35
+    val maxSizeShark = 50
 
     init {
         paint.color = Color.WHITE
@@ -37,7 +40,7 @@ class DrawerShark : Drawer() {
             coordinate[i] = (coordinate[i] + velocity / radiusOrbit) % 360.0
 
             canvas.drawBitmap(
-                drawShark(50, coordinate[i].toFloat() + 45),
+                drawShark((i * ((maxSizeShark - minSizeShark) / numsShark) + minSizeShark), coordinate[i].toFloat()),
                 (canvas.width.toFloat() / 2) + (cos(coordinate[i].toRadians()) * radiusOrbit).toFloat(),
                 (canvas.height.toFloat() / 2) + (sin(coordinate[i].toRadians()) * radiusOrbit).toFloat(),
                 paint
@@ -75,25 +78,25 @@ class DrawerShark : Drawer() {
     }
 
     private fun drawShark(size: Int, angle: Float = 0f): Bitmap {
+        val minScaled = 10
         val bitmapSize = (size * 1.2f).toInt()
         val bitmap = Bitmap.createBitmap(
             bitmapSize,
             bitmapSize,
             Bitmap.Config.ARGB_8888
         )
-
-        val scaleFactor = size / 90
+        val scaleFactor = (size - minScaled) / 90f
 
         val koef: Float = when {
-            angle > 270 -> (90 - angle % 90) * scaleFactor
-            angle > 180 -> (angle % 90) * scaleFactor
-            angle > 90 -> (90 - angle % 90) * scaleFactor
-            angle > 0 -> (angle % 90) * scaleFactor
-            else -> 0.8f
+            angle > 270 -> (90 - angle % 90) * scaleFactor + minScaled
+            angle > 180 -> (angle % 90) * scaleFactor + minScaled
+            angle > 90 -> (90 - angle % 90) * scaleFactor + minScaled
+            angle >= 0 -> (angle % 90) * scaleFactor + minScaled
+            else -> size.toFloat()
         }
 
         val canvasShark = Canvas(bitmap)
-        canvasShark.rotate(angle, bitmapSize / 2f, bitmapSize / 2f)
+        canvasShark.rotate(angle - 90, bitmapSize / 2f, bitmapSize / 2f)
         canvasShark.drawPolygon(
             floatArrayOf(
                 bitmapSize * 0.2f,
@@ -101,7 +104,7 @@ class DrawerShark : Drawer() {
                 bitmapSize * 0.8f,
                 bitmapSize * 0.2f,
                 bitmapSize * 0.8f,
-                bitmapSize * koef
+                bitmapSize * 0.2f + koef
             )
         )
         return bitmap
