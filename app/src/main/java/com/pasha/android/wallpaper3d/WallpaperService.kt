@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import com.pasha.android.wallpaper3d.drawer.Drawer
-import com.pasha.android.wallpaper3d.drawer.DrawerCircle
+import com.pasha.android.wallpaper3d.drawer.DrawerShark
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -23,7 +23,7 @@ class WallpaperService : WallpaperService() {
         private var surfaceHolder: SurfaceHolder? = null
 
         var coroutineScope = CoroutineScope(Dispatchers.IO)
-        val drawer: Drawer = DrawerCircle()
+        val drawer: Drawer = DrawerShark()
 
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
