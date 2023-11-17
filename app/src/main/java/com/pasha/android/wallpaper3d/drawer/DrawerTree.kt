@@ -2,8 +2,10 @@ package com.pasha.android.wallpaper3d.drawer
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Point
+import android.graphics.Shader
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.view.MotionEvent
@@ -13,7 +15,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class DrawerTree : Drawer() {
-    val treeDepth = 40
+    val treeDepth = 15
 
     val foliagePaint = Paint()
 
@@ -27,8 +29,9 @@ class DrawerTree : Drawer() {
 
     override fun draw(canvas: Canvas) {
         canvas.drawColor(Color.GRAY)
+        foliagePaint.shader = LinearGradient(canvas.width/3f,canvas.height/3f,canvas.width.toFloat(), canvas.height/2f, Color.CYAN, Color.BLACK, Shader.TileMode.CLAMP)
         canvas.drawLine(canvas.width/2f, canvas.height - canvas.height/4f, canvas.width/2f, canvas.height - canvas.height/3f, paint)
-        trees(treeDepth, 100f, canvas, canvas.width/2f, canvas.height - canvas.height/3f, 90.0)
+        trees(treeDepth, 200f, canvas, canvas.width/2f, canvas.height - canvas.height/3f, 90.0)
     }
 
     private fun trees(depth: Int, distance: Float, canvas: Canvas, prePositionX: Float, prePositionY: Float, currentAngle: Double) {
@@ -55,8 +58,8 @@ class DrawerTree : Drawer() {
                 rightCurrentPositionY,
                 paint
             )
-            trees(depth - Random.nextInt(1, 8), distance / treeDepth * depth, canvas, leftCurrentPositionX, leftCurrentPositionY, currentAngle + leftAngle)
-            trees(depth - Random.nextInt(1, 8), distance / treeDepth * depth, canvas, rightCurrentPositionX, rightCurrentPositionY, currentAngle - rightAngle)
+            trees(depth - 1, distance * Random.nextDouble(0.6, 0.8).toFloat(), canvas, leftCurrentPositionX, leftCurrentPositionY, currentAngle + leftAngle)
+            trees(depth - 1, distance * Random.nextDouble(0.6, 0.8).toFloat(), canvas, rightCurrentPositionX, rightCurrentPositionY, currentAngle - rightAngle)
         } else {
             canvas.drawCircle(prePositionX, prePositionY, 6f, foliagePaint)
         }
