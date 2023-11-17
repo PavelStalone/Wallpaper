@@ -34,7 +34,7 @@ class WallpaperService : WallpaperService() {
             coroutineScope.launch {
                 while (true) {
                     draw()
-                    delay(60)
+                    delay(1000)
                 }
             }
         }

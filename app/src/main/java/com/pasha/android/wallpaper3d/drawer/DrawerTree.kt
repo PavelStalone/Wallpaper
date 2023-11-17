@@ -2,6 +2,7 @@ package com.pasha.android.wallpaper3d.drawer
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Point
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -12,22 +13,30 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class DrawerTree : Drawer() {
+    val treeDepth = 40
+
+    val foliagePaint = Paint()
 
     init {
-        paint.color = Color.WHITE
+        paint.color = Color.BLACK
+        paint.strokeWidth = 7f
+
+        foliagePaint.color = Color.CYAN
+        foliagePaint.strokeWidth = 5f
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.BLACK)
-        trees(25, 200f, canvas, canvas.width/2f, canvas.height - canvas.height/3f, 90.0)
+        canvas.drawColor(Color.GRAY)
+        canvas.drawLine(canvas.width/2f, canvas.height - canvas.height/4f, canvas.width/2f, canvas.height - canvas.height/3f, paint)
+        trees(treeDepth, 100f, canvas, canvas.width/2f, canvas.height - canvas.height/3f, 90.0)
     }
 
     private fun trees(depth: Int, distance: Float, canvas: Canvas, prePositionX: Float, prePositionY: Float, currentAngle: Double) {
-        val leftAngle = Random.nextDouble(10.0, 45.0)
-        val rightAngle = Random.nextDouble(10.0, 45.0)
+        val leftAngle = Random.nextDouble(10.0, 25.0)
+        val rightAngle = Random.nextDouble(10.0, 25.0)
 
         if (depth > 0) {
-            val leftCurrentPositionX = prePositionX - (cos((currentAngle + leftAngle).toRadians()) * distance).toFloat()
+            val leftCurrentPositionX = prePositionX + (cos((currentAngle + leftAngle).toRadians()) * distance).toFloat()
             val leftCurrentPositionY = prePositionY - (sin((currentAngle + leftAngle).toRadians()) * distance).toFloat()
             canvas.drawLine(
                 prePositionX,
@@ -46,10 +55,10 @@ class DrawerTree : Drawer() {
                 rightCurrentPositionY,
                 paint
             )
-            trees(depth - Random.nextInt(1, 4), distance/2, canvas, leftCurrentPositionX, leftCurrentPositionY, currentAngle + leftAngle)
-            trees(depth - Random.nextInt(1, 4), distance/2, canvas, rightCurrentPositionX, rightCurrentPositionY, currentAngle - rightAngle)
+            trees(depth - Random.nextInt(1, 8), distance / treeDepth * depth, canvas, leftCurrentPositionX, leftCurrentPositionY, currentAngle + leftAngle)
+            trees(depth - Random.nextInt(1, 8), distance / treeDepth * depth, canvas, rightCurrentPositionX, rightCurrentPositionY, currentAngle - rightAngle)
         } else {
-            canvas.drawCircle(prePositionX, prePositionY, 10f, paint)
+            canvas.drawCircle(prePositionX, prePositionY, 6f, foliagePaint)
         }
     }
 
